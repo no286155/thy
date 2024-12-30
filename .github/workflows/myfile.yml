@@ -29,9 +29,7 @@ jobs:
         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
       run: |
         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
-        cloudflared tunnel create github-actions-rdp
-        cloudflared tunnel route dns github-actions-rdp tunnel.hloc.us.kg
-        cloudflared tunnel run --url tcp://localhost:3389 github-actions-rdp
+        sudo systemctl start cloudflared
         
     - name: Keep Alive
       run: sleep 6h
