@@ -51,20 +51,18 @@ jobs:
         
         # Create VNC password (minimum 6 characters)
         mkdir -p ~/.vnc
-        echo 'MySecurePass123' | vncpasswd -f > ~/.vnc/passwd
+        echo 'Pass123' | vncpasswd -f > ~/.vnc/passwd
         chmod 600 ~/.vnc/passwd
         
         # Start VNC server
         vncserver :1 -geometry 1280x800 -depth 24
-        
-    - name: Install noVNC
-      run: |
-        git clone https://github.com/novnc/noVNC.git
-        cd noVNC
-        ./utils/novnc_proxy --vnc localhost:5901
-        
     - name: Setup Cloudflare Tunnel
       run: |
         curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
         sudo dpkg -i cloudflared.deb
         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
+    - name: Install noVNC
+      run: |
+        git clone https://github.com/novnc/noVNC.git
+        cd noVNC
+        ./utils/novnc_proxy --vnc localhost:5901
