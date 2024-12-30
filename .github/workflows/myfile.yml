@@ -1,35 +1,63 @@
-name: RDP Connection
-on: workflow_dispatch
+# name: RDP Connection
+# on: workflow_dispatch
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v4
+    
+#     - name: Setup Cloudflared
+#       run: |
+#         wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+#         sudo dpkg -i cloudflared-linux-amd64.deb
+        
+#     - name: Install Desktop Environment
+#       run: |
+#         sudo apt-get update
+#         sudo apt install -y ubuntu-desktop xrdp
+#         sudo systemctl enable xrdp
+#         sudo systemctl start xrdp
+        
+#     - name: Setup RDP Password
+#       run: |
+#         # Set password for existing runner user
+#         echo "runner:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
+        
+#     - name: Start Cloudflare Tunnel
+#       env:
+#         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+#       run: |
+#         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
+#         sudo systemctl start cloudflared
+        
+#     - name: Keep Alive
+#       run: sleep 6h
+
+name: Ubuntu Remote Access
+
+on:
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup Cloudflared
-      run: |
-        wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-        sudo dpkg -i cloudflared-linux-amd64.deb
-        
-    - name: Install Desktop Environment
+    - name: Setup Ubuntu
       run: |
         sudo apt-get update
-        sudo apt install -y ubuntu-desktop xrdp
-        sudo systemctl enable xrdp
-        sudo systemctl start xrdp
+        sudo apt-get install -y xfce4 xfce4-goodies
+        sudo apt-get install -y tightvncserver
+        vncserver :1 -geometry 1280x800 -depth 24
         
-    - name: Setup RDP Password
+    - name: Install noVNC
       run: |
-        # Set password for existing runner user
-        echo "runner:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
+        git clone https://github.com/novnc/noVNC.git
+        cd noVNC
+        ./utils/launch.sh --vnc localhost:5901
         
-    - name: Start Cloudflare Tunnel
-      env:
-        CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+    - name: Setup Cloudflare Tunnel
       run: |
+        curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+        sudo dpkg -i cloudflared.deb
         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
-        sudo systemctl start cloudflared
-        
-    - name: Keep Alive
-      run: sleep 6h
