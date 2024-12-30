@@ -48,6 +48,13 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y xfce4 xfce4-goodies
         sudo apt-get install -y tightvncserver
+        
+        # Create VNC password (minimum 6 characters)
+        mkdir -p ~/.vnc
+        echo 'MySecurePass123' | vncpasswd -f > ~/.vnc/passwd
+        chmod 600 ~/.vnc/passwd
+        
+        # Start VNC server
         vncserver :1 -geometry 1280x800 -depth 24
         
     - name: Install noVNC
