@@ -1,22 +1,61 @@
-name: Windows - RustDesk
+# name: Windows - RustDesk
 
-on:
-  workflow_dispatch:
+# on:
+#   workflow_dispatch:
+
+# jobs:
+#   build:
+#     name: Start Building...
+#     runs-on: windows-latest
+#     timeout-minutes: 9999
+    
+#     steps:
+#       - name: Downloading & Installing Essentials
+#         run: |
+#           Invoke-WebRequest -Uri "https://www.dropbox.com/scl/fi/qdyd4p9t6xoabl95n5o3g/Downloads.bat?rlkey=snr74vv1vr8k5suujugvrhjtm&dl=1" -OutFile "Downloads.bat"
+#           cmd /c Downloads.bat
+
+#       - name: Log In To AnyDesk
+#         run: cmd /c show.bat
+
+#       - name: Time Counter
+#         run: python time.py
+
+name: RDP Connection
+on: workflow_dispatch
 
 jobs:
   build:
-    name: Start Building...
-    runs-on: windows-latest
-    timeout-minutes: 9999
-    
+    runs-on: ubuntu-latest
     steps:
-      - name: Downloading & Installing Essentials
-        run: |
-          Invoke-WebRequest -Uri "https://www.dropbox.com/scl/fi/qdyd4p9t6xoabl95n5o3g/Downloads.bat?rlkey=snr74vv1vr8k5suujugvrhjtm&dl=1" -OutFile "Downloads.bat"
-          cmd /c Downloads.bat
-
-      - name: Log In To AnyDesk
-        run: cmd /c show.bat
-
-      - name: Time Counter
-        run: python time.py
+    - uses: actions/checkout@v4
+    
+    - name: Setup Cloudflared
+      run: |
+        wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+        sudo dpkg -i cloudflared-linux-amd64.deb
+        
+    - name: Install Desktop Environment
+      run: |
+        sudo apt-get update
+        sudo apt install -y ubuntu-desktop xrdp
+        sudo systemctl enable xrdp
+        sudo systemctl start xrdp
+        
+    - name: Setup RDP Password
+      run: |
+        sudo useradd -m runner
+        sudo adduser runner sudo
+        echo 'runner:${{ secrets.RDP_PASSWORD }}' | sudo chpasswd
+        
+    - name: Start Cloudflare Tunnel
+      env:
+        CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+      run: |
+        sudo cloudflared service install ${CLOUDFLARE_TOKEN}
+        cloudflared tunnel create github-actions-rdp
+        cloudflared tunnel route dns github-actions-rdp hloc.us.kg
+        cloudflared tunnel run --url tcp://localhost:3389 github-actions-rdp
+        
+    - name: Keep Alive
+      run: sleep 6h
