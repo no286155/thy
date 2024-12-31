@@ -27,23 +27,31 @@ jobs:
         
         # Configure XRDP
         echo "xfce4-session" | sudo tee /root/.xsession
-        sudo cp /root/.xsession ~/*.xsession
+        sudo cp /root/.xsession /home/runner/.xsession
+        sudo chown runner:runner /home/runner/.xsession
+        
+        # Configure display settings
+        sudo sed -i 's/max_bpp=32/max_bpp=16/g' /etc/xrdp/xrdp.ini
         sudo sed -i 's/port=3389/port=3389/g' /etc/xrdp/xrdp.ini
         
-        # Start XRDP with proper permissions
+        # Start XRDP
         sudo systemctl enable xrdp
         sudo systemctl start xrdp
         
-        # Verify XRDP is running
-        sudo systemctl status xrdp
-        
+        # Add permissions
         sudo adduser xrdp ssl-cert
         sudo ufw allow 3389
         
     - name: Setup RDP Password
       run: |
-        # Set password for existing runner user
-        echo "runner:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
+        sudo useradd -m rdpuser
+        echo "rdpuser:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
+        sudo usermod -aG sudo rdpuser
+        
+    # - name: Setup RDP Password
+    #   run: |
+    #     # Set password for existing runner user
+    #     echo "runner:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
         
     - name: Start Cloudflare Tunnel
       env:
