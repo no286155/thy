@@ -356,7 +356,7 @@ jobs:
         # debug errors::::
         unset SESSION_MANAGER
         unset DBUS_SESSION_BUS_ADDRESS
-        dbus-launch xfce4-session
+        # dbus-launch xfce4-session
         # Monitor connections
         sudo tcpdump -i any port 3389 &     
         sleep 6h
