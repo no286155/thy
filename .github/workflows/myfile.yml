@@ -154,6 +154,7 @@ jobs:
         sudo systemctl restart xrdp
         # Monitor connections
         sudo tcpdump -i any port 3389 &     
+        sleep 6h
     # - name: Keep Alive
     #   run: |
     #     # XRDP logs
