@@ -64,24 +64,79 @@ jobs:
         # cloudflared tunnel info testing
         # # Verify tunnel logs
         # sudo cloudflared tunnel testing run --url tcp://localhost:3389
-    - name: Configure XRDP Session
+    - name: Verify XRDP Status
       run: |
-        # Configure PAM
-        sudo sed -i 's/allowed_users=console/allowed_users=anybody/g' /etc/X11/Xwrapper.config
+        # Check if process is running
+        ps aux | grep xrdp
         
-        # Configure session
-        sudo bash -c 'cat > /etc/polkit-1/localauthority/50-local.d/45-allow-colord.pkla << EOF
-        [Allow Colord all Users]
-        Identity=unix-user:*
-        Action=org.freedesktop.color-manager.create-device;org.freedesktop.color-manager.create-profile;org.freedesktop.color-manager.delete-device;org.freedesktop.color-manager.delete-profile;org.freedesktop.color-manager.modify-device;org.freedesktop.color-manager.modify-profile
-        ResultAny=no
-        ResultInactive=no
-        ResultActive=yes
-        EOF'
+        # Check actual port binding
+        sudo netstat -tulpn | grep xrdp
+        
+        # Check SELinux status (if applicable)
+        sestatus
+    # - name: Configure XRDP Session
+    #   run: |
+    #     # Configure PAM
+    #     sudo sed -i 's/allowed_users=console/allowed_users=anybody/g' /etc/X11/Xwrapper.config
+        
+    #     # Configure session
+    #     sudo bash -c 'cat > /etc/polkit-1/localauthority/50-local.d/45-allow-colord.pkla << EOF
+    #     [Allow Colord all Users]
+    #     Identity=unix-user:*
+    #     Action=org.freedesktop.color-manager.create-device;org.freedesktop.color-manager.create-profile;org.freedesktop.color-manager.delete-device;org.freedesktop.color-manager.delete-profile;org.freedesktop.color-manager.modify-device;org.freedesktop.color-manager.modify-profile
+    #     ResultAny=no
+    #     ResultInactive=no
+    #     ResultActive=yes
+    #     EOF'
+        
+    #     # Restart XRDP
+    #     sudo systemctl restart xrdp
+    #     sudo systemctl restart xrdp-sesman
+    - name: Configure XRDP
+      run: |
+        sudo bash -c 'cat > /etc/xrdp/xrdp.ini << EOL
+        [Globals]
+        port=3389
+        enable_token_login=true
+        max_bpp=32
+        enable_user_login=true
+        
+        [Xvnc]
+        name=Xvnc
+        lib=libvnc.so
+        username=ask
+        password=ask
+        ip=127.0.0.1
+        port=-1
+        
+        [Security]
+        tls_security_level=fips
+        allow_non_fips=false
+        
+        [xrdp1]
+        name=sesman-Xvnc
+        lib=libvnc.so
+        username=ask
+        password=ask
+        ip=127.0.0.1
+        port=-1
+        EOL'
+
+        # Set correct permissions
+        sudo chown root:root /etc/xrdp/xrdp.ini
+        sudo chmod 644 /etc/xrdp/xrdp.ini
         
         # Restart XRDP
-        sudo systemctl restart xrdp
-        sudo systemctl restart xrdp-sesman
+        sudo systemctl stop xrdp
+        sudo systemctl stop xrdp-sesman
+        
+        # Kill any remaining processes
+        sudo pkill -9 xrdp
+        sudo pkill -9 Xvnc
+        
+        # Start fresh
+        sudo systemctl start xrdp-sesman
+        sudo systemctl start xrdp
     - name: Test Local Connection
       run: |
         # Install netcat for testing
