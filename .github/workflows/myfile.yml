@@ -63,7 +63,7 @@ jobs:
         # cloudflared tunnel list
         # cloudflared tunnel info testing
         # Verify tunnel logs
-        sudo cloudflared tunnel run --url tcp://localhost:3389
+        sudo cloudflared tunnel testing run --url tcp://localhost:3389
     - name: Configure XRDP Session
       run: |
         # Configure PAM
