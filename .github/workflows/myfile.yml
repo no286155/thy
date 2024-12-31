@@ -212,7 +212,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y xfce4 xfce4-goodies
-        sudo apt-get install -y xrdp
+        # sudo apt-get install -y xrdp
+        sudo apt-get install -y ubuntu-desktop xrdp
         
         # Fix permissions
         sudo mkdir -p /run/xrdp
@@ -243,6 +244,7 @@ jobs:
         sudo useradd -m rdpuser
         echo "rdpuser:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
         sudo usermod -aG sudo rdpuser
+        echo "runner:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
         
     # - name: Setup RDP Password
     #   run: |
@@ -254,7 +256,7 @@ jobs:
         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
       run: |
         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
-        # sudo systemctl start cloudflared
+        sudo systemctl start cloudflared
         # # Check tunnel status
         # cloudflared tunnel list
         # cloudflared tunnel info testing
