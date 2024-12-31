@@ -72,8 +72,8 @@ jobs:
         # Check actual port binding
         sudo netstat -tulpn | grep xrdp
         
-        # Check SELinux status (if applicable)
-        sestatus
+        # # Check SELinux status (if applicable)
+        # sestatus
     # - name: Configure XRDP Session
     #   run: |
     #     # Configure PAM
