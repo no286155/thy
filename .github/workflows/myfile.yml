@@ -238,6 +238,7 @@ jobs:
         # Add permissions
         sudo adduser xrdp ssl-cert
         sudo ufw allow 3389
+        sudo ufw reload
         
     - name: Setup RDP Password
       run: |
