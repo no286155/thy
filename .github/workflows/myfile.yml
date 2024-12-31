@@ -37,6 +37,9 @@ jobs:
         # Verify XRDP is running
         sudo systemctl status xrdp
         
+        sudo adduser xrdp ssl-cert
+        sudo ufw allow 3389
+        
     - name: Setup RDP Password
       run: |
         # Set password for existing runner user
