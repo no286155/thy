@@ -12,22 +12,30 @@ jobs:
         wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
         sudo dpkg -i cloudflared-linux-amd64.deb
         
-    - name: Install Desktop Environment
+    - name: Setup XRDP
       run: |
         sudo apt-get update
-        # sudo apt install -y ubuntu-desktop xrdp
+        sudo apt-get install -y xfce4 xfce4-goodies
         sudo apt-get install -y xrdp
-        # Set SSL certificate (required for newer versions)
-        sudo adduser xrdp ssl-cert
-        # # Configure XRDP to use XFCE (if you're using XFCE)
-        # echo "xfce4-session" > ~/.xsession
+        
+        # Fix permissions
+        sudo mkdir -p /run/xrdp
+        sudo chmod 755 /run/xrdp
+        sudo chown root:root /run/xrdp
+        sudo touch /run/xrdp/xrdp.pid
+        sudo chown root:root /run/xrdp/xrdp.pid
+        
+        # Configure XRDP
+        echo "xfce4-session" | sudo tee /root/.xsession
+        sudo cp /root/.xsession ~/*.xsession
+        sudo sed -i 's/port=3389/port=3389/g' /etc/xrdp/xrdp.ini
+        
+        # Start XRDP with proper permissions
         sudo systemctl enable xrdp
-        # sudo systemctl start xrdp
-        sudo systemctl restart xrdp
-        # Check XRDP status
+        sudo systemctl start xrdp
+        
+        # Verify XRDP is running
         sudo systemctl status xrdp
-        # Check if port 3389 is listening
-        sudo netstat -tuln | grep 3389
         
     - name: Setup RDP Password
       run: |
@@ -39,7 +47,7 @@ jobs:
         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
       run: |
         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
-        sudo systemctl start cloudflared
+        # sudo systemctl start cloudflared
         
     - name: Keep Alive
       run: |
