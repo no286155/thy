@@ -51,19 +51,19 @@ jobs:
       env:
         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
       run: |
-        # Create tunnel configuration directory
-        sudo mkdir -p /etc/cloudflared
+        # # Create tunnel configuration directory
+        # sudo mkdir -p /etc/cloudflared
         
-        # Configure tunnel
-        sudo bash -c 'cat > /etc/cloudflared/config.yml << EOL
-        tunnel: ${CLOUDFLARE_TOKEN}
-        credentials-file: /etc/cloudflared/cert.json
-        ingress:
-          - hostname: vnc.yourdomain.com
-            service: tcp://localhost:5901
-          - service: http_status:404
-        protocol: tcp
-        EOL'
+        # # Configure tunnel
+        # sudo bash -c 'cat > /etc/cloudflared/config.yml << EOL
+        # tunnel: ${CLOUDFLARE_TOKEN}
+        # credentials-file: /etc/cloudflared/cert.json
+        # ingress:
+        #   - hostname: vnc.yourdomain.com
+        #     service: tcp://localhost:5901
+        #   - service: http_status:404
+        # protocol: tcp
+        # EOL'
         
         # Install and start service
         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
