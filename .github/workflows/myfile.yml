@@ -145,8 +145,8 @@ jobs:
         # Test if port is accessible
         nc -zv localhost 3389
         
-        # Check for any firewall issues
-        sudo iptables -L | grep 3389
+        # # Check for any firewall issues
+        # sudo iptables -L | grep 3389
     - name: Enable Debug Logging
       run: |
         sudo sed -i 's/LogLevel=INFO/LogLevel=DEBUG/g' /etc/xrdp/xrdp.ini
