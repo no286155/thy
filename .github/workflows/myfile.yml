@@ -15,9 +15,19 @@ jobs:
     - name: Install Desktop Environment
       run: |
         sudo apt-get update
-        sudo apt install -y ubuntu-desktop xrdp
+        # sudo apt install -y ubuntu-desktop xrdp
+        sudo apt-get install -y xrdp
+        # Set SSL certificate (required for newer versions)
+        sudo adduser xrdp ssl-cert
+        # Configure XRDP to use XFCE (if you're using XFCE)
+        echo "xfce4-session" > ~/.xsession
         sudo systemctl enable xrdp
-        sudo systemctl start xrdp
+        # sudo systemctl start xrdp
+        sudo systemctl restart xrdp
+        # Check XRDP status
+        sudo systemctl status xrdp
+        # Check if port 3389 is listening
+        sudo netstat -tuln | grep 3389
         
     - name: Setup RDP Password
       run: |
@@ -32,7 +42,11 @@ jobs:
         sudo systemctl start cloudflared
         
     - name: Keep Alive
-      run: sleep 6h
+      run: |
+        # XRDP logs
+        sudo tail -f /var/log/xrdp.log
+        sudo tail -f /var/log/xrdp-sesman.log
+        sleep 6h
 
 # name: Ubuntu Remote Access
 
