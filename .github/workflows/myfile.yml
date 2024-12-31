@@ -59,13 +59,50 @@ jobs:
       run: |
         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
         # sudo systemctl start cloudflared
-        
-    - name: Keep Alive
+        # Check tunnel status
+        cloudflared tunnel list
+        cloudflared tunnel info testing
+    - name: Configure XRDP Session
       run: |
-        # XRDP logs
-        sudo tail -f /var/log/xrdp.log
-        sudo tail -f /var/log/xrdp-sesman.log
-        sleep 6h
+        # Configure PAM
+        sudo sed -i 's/allowed_users=console/allowed_users=anybody/g' /etc/X11/Xwrapper.config
+        
+        # Configure session
+        sudo bash -c 'cat > /etc/polkit-1/localauthority/50-local.d/45-allow-colord.pkla << EOF
+        [Allow Colord all Users]
+        Identity=unix-user:*
+        Action=org.freedesktop.color-manager.create-device;org.freedesktop.color-manager.create-profile;org.freedesktop.color-manager.delete-device;org.freedesktop.color-manager.delete-profile;org.freedesktop.color-manager.modify-device;org.freedesktop.color-manager.modify-profile
+        ResultAny=no
+        ResultInactive=no
+        ResultActive=yes
+        EOF'
+        
+        # Restart XRDP
+        sudo systemctl restart xrdp
+        sudo systemctl restart xrdp-sesman
+    - name: Test Local Connection
+      run: |
+        # Install netcat for testing
+        sudo apt-get install -y netcat
+        
+        # Test if port is accessible
+        nc -zv localhost 3389
+        
+        # Check for any firewall issues
+        sudo iptables -L | grep 3389
+    - name: Enable Debug Logging
+      run: |
+        sudo sed -i 's/LogLevel=INFO/LogLevel=DEBUG/g' /etc/xrdp/xrdp.ini
+        sudo sed -i 's/EnableSyslog=true/EnableSyslog=true/g' /etc/xrdp/xrdp.ini
+        sudo systemctl restart xrdp
+        # Monitor connections
+        sudo tcpdump -i any port 3389 &     
+    # - name: Keep Alive
+    #   run: |
+    #     # XRDP logs
+    #     sudo tail -f /var/log/xrdp.log
+    #     sudo tail -f /var/log/xrdp-sesman.log
+    #     sleep 6h
 
 # name: Ubuntu Remote Access
 
