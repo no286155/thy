@@ -19,8 +19,8 @@ jobs:
         sudo apt-get install -y xrdp
         # Set SSL certificate (required for newer versions)
         sudo adduser xrdp ssl-cert
-        # Configure XRDP to use XFCE (if you're using XFCE)
-        echo "xfce4-session" > ~/.xsession
+        # # Configure XRDP to use XFCE (if you're using XFCE)
+        # echo "xfce4-session" > ~/.xsession
         sudo systemctl enable xrdp
         # sudo systemctl start xrdp
         sudo systemctl restart xrdp
