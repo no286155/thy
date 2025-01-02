@@ -367,41 +367,41 @@
 #     #     sudo tail -f /var/log/xrdp-sesman.log
 #     #     sleep 6h
 
-name: Ubuntu Remote Access
+# name: Ubuntu Remote Access
 
-on:
-  workflow_dispatch:
+# on:
+#   workflow_dispatch:
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Setup Ubuntu
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y xfce4 xfce4-goodies
-        sudo apt-get install -y tightvncserver
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Setup Ubuntu
+#       run: |
+#         sudo apt-get update
+#         sudo apt-get install -y xfce4 xfce4-goodies
+#         sudo apt-get install -y tightvncserver
         
-        # Create VNC password (minimum 6 characters)
-        mkdir -p ~/.vnc
-        echo 'Pass123' | vncpasswd -f > ~/.vnc/passwd
-        chmod 600 ~/.vnc/passwd
+#         # Create VNC password (minimum 6 characters)
+#         mkdir -p ~/.vnc
+#         echo 'Pass123' | vncpasswd -f > ~/.vnc/passwd
+#         chmod 600 ~/.vnc/passwd
         
-        # Start VNC server
-        vncserver :1 -geometry 1280x800 -depth 24
+#         # Start VNC server
+#         vncserver :1 -geometry 1280x800 -depth 24
 
-    - name: Setup Cloudflare Tunnel
-      env:
-        CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
-      run: |
-        curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-        sudo dpkg -i cloudflared.deb
-        sudo cloudflared service install ${CLOUDFLARE_TOKEN}
-        sleep 10
+#     - name: Setup Cloudflare Tunnel
+#       env:
+#         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+#       run: |
+#         curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+#         sudo dpkg -i cloudflared.deb
+#         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
+#         sleep 10
 
-    - name: Install noVNC
-      run: |
-        git clone https://github.com/novnc/noVNC.git
-        cd noVNC
-        # port 6080
-        ./utils/novnc_proxy --vnc localhost:5901
+#     - name: Install noVNC
+#       run: |
+#         git clone https://github.com/novnc/noVNC.git
+#         cd noVNC
+#         # port 6080
+#         ./utils/novnc_proxy --vnc localhost:5901
