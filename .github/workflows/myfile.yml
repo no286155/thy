@@ -194,216 +194,216 @@
 #         sudo journalctl -u cloudflared -f &
 #         sleep 6h
 
-# name: RDP Connection xrdp
-# on: workflow_dispatch
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     steps:
-#     - uses: actions/checkout@v4
-    
-#     - name: Setup Cloudflared
-#       run: |
-#         wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-#         sudo dpkg -i cloudflared-linux-amd64.deb
-        
-#     - name: Setup XRDP
-#       run: |
-#         sudo apt-get update
-#         sudo apt-get install -y xfce4 xfce4-goodies
-#         sudo apt-get install -y xrdp
-#         # sudo apt-get install -y ubuntu-desktop xrdp
-        
-#         # Fix permissions
-#         sudo mkdir -p /run/xrdp
-#         sudo chmod 755 /run/xrdp
-#         sudo chown root:root /run/xrdp
-#         sudo touch /run/xrdp/xrdp.pid
-#         sudo chown root:root /run/xrdp/xrdp.pid
-        
-#         # Configure XRDP
-#         echo "xfce4-session" | sudo tee /root/.xsession
-#         sudo cp /root/.xsession /home/runner/.xsession
-#         sudo chown runner:runner /home/runner/.xsession
-        
-#         # Configure display settings
-#         sudo sed -i 's/max_bpp=32/max_bpp=16/g' /etc/xrdp/xrdp.ini
-#         sudo sed -i 's/port=3389/port=3389/g' /etc/xrdp/xrdp.ini
-        
-#         # Start XRDP
-#         sudo systemctl enable xrdp
-#         sudo systemctl start xrdp
-        
-#         # Add permissions
-#         sudo adduser xrdp ssl-cert
-#         sudo ufw allow 3389
-#         sudo ufw reload
-#         sudo ufw disable
-        
-#     - name: Setup RDP Password
-#       run: |
-#         sudo useradd -m rdpuser
-#         echo "rdpuser:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
-#         sudo usermod -aG sudo rdpuser
-#         echo "runner:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
-        
-#     # - name: Setup RDP Password
-#     #   run: |
-#     #     # Set password for existing runner user
-#     #     echo "runner:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
-        
-#     - name: Start Cloudflare Tunnel
-#       env:
-#         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
-#       run: |
-#         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
-#         sudo systemctl start cloudflared
-#         # # Check tunnel status
-#         # cloudflared tunnel list
-#         # cloudflared tunnel info testing
-#         # # Verify tunnel logs
-#         # sudo cloudflared tunnel testing run --url tcp://localhost:3389
-#     - name: Verify XRDP Status
-#       run: |
-#         sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
-#         sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
-#         # Check if process is running
-#         ps aux | grep xrdp
-        
-#         # Check actual port binding
-#         sudo netstat -tulpn | grep xrdp
-        
-#         # # Check SELinux status (if applicable)
-#         # sestatus
-#     # - name: Configure XRDP Session
-#     #   run: |
-#     #     # Configure PAM
-#     #     sudo sed -i 's/allowed_users=console/allowed_users=anybody/g' /etc/X11/Xwrapper.config
-        
-#     #     # Configure session
-#     #     sudo bash -c 'cat > /etc/polkit-1/localauthority/50-local.d/45-allow-colord.pkla << EOF
-#     #     [Allow Colord all Users]
-#     #     Identity=unix-user:*
-#     #     Action=org.freedesktop.color-manager.create-device;org.freedesktop.color-manager.create-profile;org.freedesktop.color-manager.delete-device;org.freedesktop.color-manager.delete-profile;org.freedesktop.color-manager.modify-device;org.freedesktop.color-manager.modify-profile
-#     #     ResultAny=no
-#     #     ResultInactive=no
-#     #     ResultActive=yes
-#     #     EOF'
-        
-#     #     # Restart XRDP
-#     #     sudo systemctl restart xrdp
-#     #     sudo systemctl restart xrdp-sesman
-#     # - name: Configure XRDP
-#     #   run: |
-#     #     sudo bash -c 'cat > /etc/xrdp/xrdp.ini << EOL
-#     #     [Globals]
-#     #     port=3389
-#     #     enable_token_login=true
-#     #     max_bpp=32
-#     #     enable_user_login=true
-        
-#     #     [Xvnc]
-#     #     name=Xvnc
-#     #     lib=libvnc.so
-#     #     username=ask
-#     #     password=ask
-#     #     ip=127.0.0.1
-#     #     port=-1
-        
-#     #     [Security]
-#     #     tls_security_level=fips
-#     #     allow_non_fips=false
-        
-#     #     [xrdp1]
-#     #     name=sesman-Xvnc
-#     #     lib=libvnc.so
-#     #     username=ask
-#     #     password=ask
-#     #     ip=127.0.0.1
-#     #     port=-1
-#     #     EOL'
-
-#     #     # Set correct permissions
-#     #     sudo chown root:root /etc/xrdp/xrdp.ini
-#     #     sudo chmod 644 /etc/xrdp/xrdp.ini
-        
-#     #     # Restart XRDP
-#     #     sudo systemctl stop xrdp
-#     #     sudo systemctl stop xrdp-sesman
-        
-#     #     # Kill any remaining processes
-#     #     sudo pkill -9 xrdp
-#     #     sudo pkill -9 Xvnc
-        
-#     #     # Start fresh
-#     #     sudo systemctl start xrdp-sesman
-#     #     sudo systemctl start xrdp
-#     - name: Test Local Connection
-#       run: |
-#         # Install netcat for testing
-#         sudo apt-get install -y netcat
-        
-#         # Test if port is accessible
-#         nc -zv localhost 3389
-        
-#         # # Check for any firewall issues
-#         # sudo iptables -L | grep 3389
-#     - name: Enable Debug Logging
-#       run: |
-#         sudo sed -i 's/LogLevel=INFO/LogLevel=DEBUG/g' /etc/xrdp/xrdp.ini
-#         sudo sed -i 's/EnableSyslog=true/EnableSyslog=true/g' /etc/xrdp/xrdp.ini
-#         sudo systemctl restart xrdp
-#         # debug errors::::
-#         unset SESSION_MANAGER
-#         unset DBUS_SESSION_BUS_ADDRESS
-#         # dbus-launch xfce4-session
-#         # Monitor connections
-#         sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
-#         sudo tcpdump -i any port 3389 &     
-#         sleep 6h
-#     # - name: Keep Alive
-#     #   run: |
-#     #     # XRDP logs
-#     #     sudo tail -f /var/log/xrdp.log
-#     #     sudo tail -f /var/log/xrdp-sesman.log
-#     #     sleep 6h
-
-name: Ubuntu Remote Access
-
-on:
-  workflow_dispatch:
+name: RDP Connection xrdp
+on: workflow_dispatch
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Setup Ubuntu
+    - uses: actions/checkout@v4
+    
+    - name: Setup Cloudflared
+      run: |
+        wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+        sudo dpkg -i cloudflared-linux-amd64.deb
+        
+    - name: Setup XRDP
       run: |
         sudo apt-get update
         sudo apt-get install -y xfce4 xfce4-goodies
-        sudo apt-get install -y tightvncserver
+        sudo apt-get install -y xrdp
+        # sudo apt-get install -y ubuntu-desktop xrdp
         
-        # Create VNC password (minimum 6 characters)
-        mkdir -p ~/.vnc
-        echo 'Pass123' | vncpasswd -f > ~/.vnc/passwd
-        chmod 600 ~/.vnc/passwd
+        # Fix permissions
+        sudo mkdir -p /run/xrdp
+        sudo chmod 755 /run/xrdp
+        sudo chown root:root /run/xrdp
+        sudo touch /run/xrdp/xrdp.pid
+        sudo chown root:root /run/xrdp/xrdp.pid
         
-        # Start VNC server
-        vncserver :1 -geometry 1280x800 -depth 24
-
-    - name: Setup Cloudflare Tunnel
+        # Configure XRDP
+        echo "xfce4-session" | sudo tee /root/.xsession
+        sudo cp /root/.xsession /home/runner/.xsession
+        sudo chown runner:runner /home/runner/.xsession
+        
+        # Configure display settings
+        sudo sed -i 's/max_bpp=32/max_bpp=16/g' /etc/xrdp/xrdp.ini
+        sudo sed -i 's/port=3389/port=3389/g' /etc/xrdp/xrdp.ini
+        
+        # Start XRDP
+        sudo systemctl enable xrdp
+        sudo systemctl start xrdp
+        
+        # Add permissions
+        sudo adduser xrdp ssl-cert
+        sudo ufw allow 3389
+        sudo ufw reload
+        sudo ufw disable
+        
+    - name: Setup RDP Password
+      run: |
+        sudo useradd -m rdpuser
+        echo "rdpuser:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
+        sudo usermod -aG sudo rdpuser
+        echo "runner:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
+        
+    # - name: Setup RDP Password
+    #   run: |
+    #     # Set password for existing runner user
+    #     echo "runner:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
+        
+    - name: Start Cloudflare Tunnel
       env:
         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
       run: |
-        curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-        sudo dpkg -i cloudflared.deb
         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
-        sleep 10
-
-    - name: Install noVNC
+        sudo systemctl start cloudflared
+        # # Check tunnel status
+        # cloudflared tunnel list
+        # cloudflared tunnel info testing
+        # # Verify tunnel logs
+        # sudo cloudflared tunnel testing run --url tcp://localhost:3389
+    - name: Verify XRDP Status
       run: |
-        git clone https://github.com/novnc/noVNC.git
-        cd noVNC
-        # port 6080
-        ./utils/novnc_proxy --vnc localhost:5901
+        sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+        sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+        # Check if process is running
+        ps aux | grep xrdp
+        
+        # Check actual port binding
+        sudo netstat -tulpn | grep xrdp
+        
+        # # Check SELinux status (if applicable)
+        # sestatus
+    # - name: Configure XRDP Session
+    #   run: |
+    #     # Configure PAM
+    #     sudo sed -i 's/allowed_users=console/allowed_users=anybody/g' /etc/X11/Xwrapper.config
+        
+    #     # Configure session
+    #     sudo bash -c 'cat > /etc/polkit-1/localauthority/50-local.d/45-allow-colord.pkla << EOF
+    #     [Allow Colord all Users]
+    #     Identity=unix-user:*
+    #     Action=org.freedesktop.color-manager.create-device;org.freedesktop.color-manager.create-profile;org.freedesktop.color-manager.delete-device;org.freedesktop.color-manager.delete-profile;org.freedesktop.color-manager.modify-device;org.freedesktop.color-manager.modify-profile
+    #     ResultAny=no
+    #     ResultInactive=no
+    #     ResultActive=yes
+    #     EOF'
+        
+    #     # Restart XRDP
+    #     sudo systemctl restart xrdp
+    #     sudo systemctl restart xrdp-sesman
+    # - name: Configure XRDP
+    #   run: |
+    #     sudo bash -c 'cat > /etc/xrdp/xrdp.ini << EOL
+    #     [Globals]
+    #     port=3389
+    #     enable_token_login=true
+    #     max_bpp=32
+    #     enable_user_login=true
+        
+    #     [Xvnc]
+    #     name=Xvnc
+    #     lib=libvnc.so
+    #     username=ask
+    #     password=ask
+    #     ip=127.0.0.1
+    #     port=-1
+        
+    #     [Security]
+    #     tls_security_level=fips
+    #     allow_non_fips=false
+        
+    #     [xrdp1]
+    #     name=sesman-Xvnc
+    #     lib=libvnc.so
+    #     username=ask
+    #     password=ask
+    #     ip=127.0.0.1
+    #     port=-1
+    #     EOL'
+
+    #     # Set correct permissions
+    #     sudo chown root:root /etc/xrdp/xrdp.ini
+    #     sudo chmod 644 /etc/xrdp/xrdp.ini
+        
+    #     # Restart XRDP
+    #     sudo systemctl stop xrdp
+    #     sudo systemctl stop xrdp-sesman
+        
+    #     # Kill any remaining processes
+    #     sudo pkill -9 xrdp
+    #     sudo pkill -9 Xvnc
+        
+    #     # Start fresh
+    #     sudo systemctl start xrdp-sesman
+    #     sudo systemctl start xrdp
+    - name: Test Local Connection
+      run: |
+        # Install netcat for testing
+        sudo apt-get install -y netcat
+        
+        # Test if port is accessible
+        nc -zv localhost 3389
+        
+        # # Check for any firewall issues
+        # sudo iptables -L | grep 3389
+    - name: Enable Debug Logging
+      run: |
+        sudo sed -i 's/LogLevel=INFO/LogLevel=DEBUG/g' /etc/xrdp/xrdp.ini
+        sudo sed -i 's/EnableSyslog=true/EnableSyslog=true/g' /etc/xrdp/xrdp.ini
+        sudo systemctl restart xrdp
+        # debug errors::::
+        unset SESSION_MANAGER
+        unset DBUS_SESSION_BUS_ADDRESS
+        # dbus-launch xfce4-session
+        # Monitor connections
+        sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+        sudo tcpdump -i any port 3389 &     
+        sleep 6h
+    # - name: Keep Alive
+    #   run: |
+    #     # XRDP logs
+    #     sudo tail -f /var/log/xrdp.log
+    #     sudo tail -f /var/log/xrdp-sesman.log
+    #     sleep 6h
+
+# name: Ubuntu Remote Access
+
+# on:
+#   workflow_dispatch:
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Setup Ubuntu
+#       run: |
+#         sudo apt-get update
+#         sudo apt-get install -y xfce4 xfce4-goodies
+#         sudo apt-get install -y tightvncserver
+        
+#         # Create VNC password (minimum 6 characters)
+#         mkdir -p ~/.vnc
+#         echo 'Pass123' | vncpasswd -f > ~/.vnc/passwd
+#         chmod 600 ~/.vnc/passwd
+        
+#         # Start VNC server
+#         vncserver :1 -geometry 1280x800 -depth 24
+
+#     - name: Setup Cloudflare Tunnel
+#       env:
+#         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+#       run: |
+#         curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+#         sudo dpkg -i cloudflared.deb
+#         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
+#         sleep 10
+
+#     - name: Install noVNC
+#       run: |
+#         git clone https://github.com/novnc/noVNC.git
+#         cd noVNC
+#         # port 6080
+#         ./utils/novnc_proxy --vnc localhost:5901
