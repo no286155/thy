@@ -339,16 +339,18 @@ jobs:
     #     # Start fresh
     #     sudo systemctl start xrdp-sesman
     #     sudo systemctl start xrdp
-    - name: Test Local Connection
-      run: |
-        # Install netcat for testing
-        sudo apt-get install -y netcat
+
+    
+    # - name: Test Local Connection
+    #   run: |
+    #     # Install netcat for testing
+    #     sudo apt-get install -y netcat
         
-        # Test if port is accessible
-        nc -zv localhost 3389
+    #     # Test if port is accessible
+    #     nc -zv localhost 3389
         
-        # # Check for any firewall issues
-        # sudo iptables -L | grep 3389
+    #     # # Check for any firewall issues
+    #     # sudo iptables -L | grep 3389
     - name: Enable Debug Logging
       run: |
         sudo sed -i 's/LogLevel=INFO/LogLevel=DEBUG/g' /etc/xrdp/xrdp.ini
