@@ -273,7 +273,7 @@ jobs:
     # Step 3: Run the Python script
     - name: Run Python script
       run: |
-          python -c "
+          python -u -c "
           import subprocess
           import threading
           import time
