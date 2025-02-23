@@ -279,7 +279,6 @@ jobs:
           import time
           import socket
           import subprocess
-          import os
           
           def iframe_thread(port):
               while True:
@@ -289,7 +288,7 @@ jobs:
                   if result == 0:
                       break
                   sock.close()
-              os.system('echo \"\\nComfyUI finished loading, trying to launch cloudflared (if it gets stuck here cloudflared is having issues)\\n\"')
+              subprocess.run(['echo', '\nComfyUI finished loading, trying to launch cloudflared (if it gets stuck here cloudflared is having issues)\n'], shell=True)
 
               p = subprocess.Popen(['cloudflared', 'tunnel', '--url', f'http://127.0.0.1:{port}'],
                                  stdout=subprocess.PIPE,
@@ -298,13 +297,23 @@ jobs:
               
               for line in p.stderr:
                   if 'trycloudflare.com' in line:
-                      os.system(f'echo \"This is the URL to access ComfyUI: {line[line.find("http"):]}\"')
+                      url = line[line.find('http'):]
+                      subprocess.run(['echo', f'This is the URL to access ComfyUI: {url}'], shell=True)
+                      # Also write to a file that GitHub Actions can access
+                      with open('cloudflare_url.txt', 'w') as f:
+                          f.write(url)
 
-          thread = threading.Thread(target=iframe_thread, daemon=True, args=(8188,))
+          thread = threading.Thread(target=iframe_thread, daemon=True, args=(3389,))
           thread.start()
-          thread.join(timeout=60)
+          
+          # Keep main thread alive to see output
+          while thread.is_alive():
+              time.sleep(1)
           "
           echo "Script execution completed"
+          if [ -f cloudflare_url.txt ]; then
+            echo "URL found:"
+            cat cloudflare_url.tx
 
     - name: Verify XRDP Status
       run: |
