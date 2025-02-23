@@ -257,13 +257,16 @@ jobs:
       env:
         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
       run: |
+        # 2 lines after this is working
         # sudo cloudflared service install ${CLOUDFLARE_TOKEN}
-        sudo systemctl start cloudflared
+        # sudo systemctl start cloudflared
         # # Check tunnel status
         # cloudflared tunnel list
         # cloudflared tunnel info testing
         # # Verify tunnel logs
         # sudo cloudflared tunnel testing run --url tcp://localhost:3389
+        wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+        dpkg -i cloudflared-linux-amd64.deb
         
     # Step 3: Run the Python script
     - name: Run Python script
