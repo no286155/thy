@@ -307,8 +307,8 @@ jobs:
           thread.start()
           
           # Keep main thread alive to see output
-          while thread.is_alive():
-              time.sleep(1)
+          # while thread.is_alive():
+          #     time.sleep(1)
           "
           echo "Script execution completed"
           if [ -f cloudflare_url.txt ]; then
