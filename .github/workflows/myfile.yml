@@ -305,7 +305,7 @@ jobs:
 
           thread = threading.Thread(target=iframe_thread, daemon=True, args=(3389,))
           thread.start()
-          
+          thread.join(timeout=60)
           # Keep main thread alive to see output
           # while thread.is_alive():
           #     time.sleep(1)
