@@ -8,8 +8,8 @@ jobs:
     - name: Setup abcd
       run: |
         sudo apt-get update
-        firefox
-        chrome
+        # firefox
+        # chrome
     - name: Setup Cloudflared222
       env:
           GT: ${{ secrets.GT }}
