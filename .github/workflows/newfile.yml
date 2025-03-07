@@ -18,5 +18,7 @@ jobs:
         git clone https://${GT}@github.com/locionic/shortsmemes-anime ShortsMemes
         cd ShortsMemes
         pip install -r requirements.txt
+        python setup.py
+        sleep 15
         chmod +x run.sh
         ./run.sh ${AC1} ${AC1_P} ${AC2} ${AC2_P}
