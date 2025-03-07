@@ -14,7 +14,7 @@ jobs:
           AC2: ${{ secrets.AC2 }}
           AC2_P: ${{ secrets.AC2_P }}
       run: |
-        cd /home/runner/Desktop
+        # cd /home/runner/Desktop
         git clone https://${GT}@github.com/locionic/shortsmemes-anime ShortsMemes
         cd ShortsMemes
         pip install -r requirements.txt
