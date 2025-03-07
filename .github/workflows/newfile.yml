@@ -1,0 +1,22 @@
+name: Testing
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Cloudflared
+      env:
+          GT: ${{ secrets.GT }}
+          AC1: ${{ secrets.AC1 }}
+          AC1_P: ${{ secrets.AC1_P }}
+          AC2: ${{ secrets.AC2 }}
+          AC2_P: ${{ secrets.AC2_P }}
+      run: |
+        cd /home/runner/Desktop
+        git clone https://${GT}@github.com/locionic/shortsmemes-anime ShortsMemes
+        cd ShortsMemes
+        pip install -r requirements.txt
+        chmod +x run.sh
+        ./run.sh ${AC1} ${AC1_P} ${AC2} ${AC2_P}
