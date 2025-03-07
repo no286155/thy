@@ -5,8 +5,74 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    # - uses: actions/checkout@v4
     - name: Setup Cloudflared
+      run: |
+        wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+        sudo dpkg -i cloudflared-linux-amd64.deb
+        
+    - name: Setup XRDP
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xfce4 xfce4-goodies
+        sudo apt-get install -y xrdp
+        # sudo apt-get install -y ubuntu-desktop xrdp
+        
+        # Fix permissions
+        sudo mkdir -p /run/xrdp
+        sudo chmod 755 /run/xrdp
+        sudo chown root:root /run/xrdp
+        sudo touch /run/xrdp/xrdp.pid
+        sudo chown root:root /run/xrdp/xrdp.pid
+        
+        # Configure XRDP
+        echo "xfce4-session" | sudo tee /root/.xsession
+        sudo cp /root/.xsession /home/runner/.xsession
+        sudo chown runner:runner /home/runner/.xsession
+        
+        # Configure display settings
+        sudo sed -i 's/max_bpp=32/max_bpp=16/g' /etc/xrdp/xrdp.ini
+        sudo sed -i 's/port=3389/port=3389/g' /etc/xrdp/xrdp.ini
+        
+        # Start XRDP
+        sudo systemctl enable xrdp
+        sudo systemctl start xrdp
+        
+        # Add permissions
+        sudo adduser xrdp ssl-cert
+        sudo ufw allow 3389
+        sudo ufw reload
+        sudo ufw disable
+        
+    - name: Setup RDP Password
+      run: |
+        sudo useradd -m rdpuser
+        echo "rdpuser:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
+        sudo usermod -aG sudo rdpuser
+        echo "runner:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
+        
+    # - name: Setup RDP Password
+    #   run: |
+    #     # Set password for existing runner user
+    #     echo "runner:${{ secrets.RDP_PASSWORD }}" | sudo chpasswd
+        
+    - name: Start Cloudflare Tunnel
+      env:
+        CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+      run: |
+        # 2 lines after this is working
+        # sudo cloudflared service install ${CLOUDFLARE_TOKEN}
+        # sudo systemctl start cloudflared
+        # # Check tunnel status
+        # cloudflared tunnel list
+        # cloudflared tunnel info testing
+        # # Verify tunnel logs
+        # sudo cloudflared tunnel testing run --url tcp://localhost:3389
+        # after this line isnt important
+        # wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+        # dpkg -i cloudflared-linux-amd64.deb
+        echo 'haha'
+    - name: Setup Cloudflared222
       env:
           GT: ${{ secrets.GT }}
           AC1: ${{ secrets.AC1 }}
