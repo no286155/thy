@@ -5,11 +5,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Setup abcd
-      run: |
-        sudo apt-get update
-        # firefox
-        # chrome
+    # - name: Setup abcd
+    #   run: |
+    #     sudo apt-get update
     - name: Setup Cloudflared222
       env:
           GT: ${{ secrets.GT }}
@@ -17,6 +15,8 @@ jobs:
           AC1_P: ${{ secrets.AC1_P }}
           AC2: ${{ secrets.AC2 }}
           AC2_P: ${{ secrets.AC2_P }}
+          AC3: ${{ secrets.AC3 }}
+          AC3_P: ${{ secrets.AC3_P }}
       run: |
         # git clone https://${GT}@github.com/locionic/shortsmemes-anime ShortsMemes
         # cd ShortsMemes
