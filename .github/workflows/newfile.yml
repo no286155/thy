@@ -17,6 +17,9 @@ jobs:
           AC2_P: ${{ secrets.AC2_P }}
           AC3: ${{ secrets.AC3 }}
           AC3_P: ${{ secrets.AC3_P }}
+          GT_2: ${{ secrets.GT_2 }}
+          AC4: ${{ secrets.AC4 }}
+          AC4_P: ${{ secrets.AC4_P }}
       run: |
         git clone https://${GT}@github.com/locionic/shortsmemes-anime ShortsMemes
         cd ShortsMemes
@@ -29,3 +32,8 @@ jobs:
         cd ShortVideo
         chmod +x run.sh
         ./run.sh ${AC3} ${AC3_P}
+        cd ../
+        git clone https://${GT_2}@github.com/hongloc/MoneyPrinterV2
+        cd MoneyPrinterV2
+        chmod +x setup.sh
+        ./setup.sh ${AC4} ${AC4_P}
