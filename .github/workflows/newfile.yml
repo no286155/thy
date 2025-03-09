@@ -32,8 +32,8 @@ jobs:
         cd ShortVideo
         chmod +x run.sh
         ./run.sh ${AC3} ${AC3_P}
-        cd ../
-        git clone https://${GT_2}@github.com/hongloc/MoneyPrinterV2
-        cd MoneyPrinterV2
-        chmod +x setup.sh
-        ./setup.sh ${AC4} ${AC4_P}
+        # cd ../
+        # git clone https://${GT_2}@github.com/hongloc/MoneyPrinterV2
+        # cd MoneyPrinterV2
+        # chmod +x setup.sh
+        # ./setup.sh ${AC4} ${AC4_P}
