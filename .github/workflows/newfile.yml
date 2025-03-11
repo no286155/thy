@@ -3,7 +3,7 @@ name: TestingNocache
 
 on:
   schedule:
-    - cron: '0 4 * * *'  # This runs at 4 AM UTC every day
+    - cron: '30 2 * * *'  # This runs at 4 AM UTC every day
 
 jobs:
   build:
