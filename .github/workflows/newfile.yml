@@ -1,9 +1,9 @@
 name: TestingNocache
-on: workflow_dispatch
+# on: workflow_dispatch
 
-# on:
-#   schedule:
-#     - cron: '30 2 * * *'  # This runs at 4 AM UTC every day
+on:
+  schedule:
+    - cron: '30 2 * * *'  # This runs at 4 AM UTC every day
 
 jobs:
   build:
@@ -25,13 +25,13 @@ jobs:
           AC4: ${{ secrets.AC4 }}
           AC4_P: ${{ secrets.AC4_P }}
       run: |
-        # git clone https://${GT}@github.com/locionic/shortsmemes-anime ShortsMemes
-        # cd ShortsMemes
-        # pip install -r requirements.txt
-        # python setup.py
-        # chmod +x run.sh
-        # ./run.sh ${AC1} ${AC1_P} ${AC2} ${AC2_P}
-        # cd ../
+        git clone https://${GT}@github.com/locionic/shortsmemes-anime ShortsMemes
+        cd ShortsMemes
+        pip install -r requirements.txt
+        python setup.py
+        chmod +x run.sh
+        ./run.sh ${AC1} ${AC1_P} ${AC2} ${AC2_P}
+        cd ../
         git clone https://${GT}@github.com/locionic/Short-Video-Auto-Generation ShortVideo
         cd ShortVideo
         chmod +x run.sh
