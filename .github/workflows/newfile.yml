@@ -54,3 +54,6 @@ jobs:
         cd faceless-video-generator
         chmod +x run.sh
         ./run.sh ${AC5} ${AC5_P}
+
+        cd ../
+        rm -rf faceless-video-generator
