@@ -24,6 +24,8 @@ jobs:
           GT_2: ${{ secrets.GT_2 }}
           AC4: ${{ secrets.AC4 }}
           AC4_P: ${{ secrets.AC4_P }}
+          AC5: ${{ secrets.AC5 }}
+          AC5_P: ${{ secrets.AC5_P }}
       run: |
         git clone https://${GT}@github.com/locionic/shortsmemes-anime ShortsMemes
         cd ShortsMemes
@@ -44,11 +46,11 @@ jobs:
         git clone https://${GT_2}@github.com/hongloc/MoneyPrinterV2
         cd MoneyPrinterV2
         chmod +x setup.sh
-        ./setup.sh ${AC4} ${AC4_P}
+        ./setup.sh ${AC5} ${AC5_P}
 
         cd ../
         rm -rf MoneyPrinterV2
         git clone https://${GT}@github.com/locionic/faceless-video-generator
         cd faceless-video-generator
         chmod +x run.sh
-        ./run.sh ${AC4} ${AC4_P}
+        ./run.sh ${AC5} ${AC5_P}
