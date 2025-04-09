@@ -27,22 +27,22 @@ jobs:
           AC5: ${{ secrets.AC5 }}
           AC5_P: ${{ secrets.AC5_P }}
       run: |
-        git clone https://${GT}@github.com/locionic/shortsmemes-anime ShortsMemes
-        cd ShortsMemes
-        pip install -r requirements.txt
-        python setup.py
-        chmod +x run.sh
-        ./run.sh ${AC1} ${AC1_P} ${AC2} ${AC2_P}
+        # git clone https://${GT}@github.com/locionic/shortsmemes-anime ShortsMemes
+        # cd ShortsMemes
+        # pip install -r requirements.txt
+        # python setup.py
+        # chmod +x run.sh
+        # ./run.sh ${AC1} ${AC1_P} ${AC2} ${AC2_P}
         
-        cd ../
-        rm -rf ShortsMemes
-        git clone https://${GT}@github.com/locionic/Short-Video-Auto-Generation ShortVideo
-        cd ShortVideo
-        chmod +x run.sh
-        ./run.sh ${AC3} ${AC3_P} ${AC4} ${AC4_P}
+        # cd ../
+        # rm -rf ShortsMemes
+        # git clone https://${GT}@github.com/locionic/Short-Video-Auto-Generation ShortVideo
+        # cd ShortVideo
+        # chmod +x run.sh
+        # ./run.sh ${AC3} ${AC3_P} ${AC4} ${AC4_P}
        
-        cd ../
-        rm -rf ShortVideo
+        # cd ../
+        # rm -rf ShortVideo
         git clone https://${GT_2}@github.com/hongloc/MoneyPrinterV2
         cd MoneyPrinterV2
         chmod +x setup.sh
