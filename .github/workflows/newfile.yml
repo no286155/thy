@@ -1,9 +1,9 @@
 name: TestingNocache
-# on: workflow_dispatch
+on: workflow_dispatch
 
-on:
-  schedule:
-    - cron: '30 2 * * *'  # This runs at 4 AM UTC every day
+# on:
+#   schedule:
+#     - cron: '30 2 * * *'  # This runs at 4 AM UTC every day
 
 jobs:
   build:
