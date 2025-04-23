@@ -270,7 +270,7 @@ jobs:
         # sudo cloudflared service install ${CLOUDFLARE_TOKEN}
         # sudo systemctl start cloudflared
         # # Check tunnel status
-        cloudflared tunnel list
+        # cloudflared tunnel list
         # cloudflared tunnel info testing
         # # Verify tunnel logs
         # sudo cloudflared tunnel testing run --url tcp://localhost:3389
