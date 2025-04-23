@@ -274,7 +274,7 @@ jobs:
         # cloudflared tunnel info testing
         # # Verify tunnel logs
         # sudo cloudflared tunnel testing run --url tcp://localhost:3389
-        sudo cloudflared tunnel hloc-dpdns run --url tcp://localhost:3389
+        # sudo cloudflared tunnel hloc-dpdns run --url tcp://localhost:3389
         # after this line isnt important
         # wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
         # dpkg -i cloudflared-linux-amd64.deb
