@@ -239,6 +239,8 @@ jobs:
         # Configure display settings
         sudo sed -i 's/max_bpp=32/max_bpp=16/g' /etc/xrdp/xrdp.ini
         sudo sed -i 's/port=3389/port=3389/g' /etc/xrdp/xrdp.ini
+        sudo sed -i 's/crypt_level=high/crypt_level=none/g' /etc/xrdp/xrdp.ini
+        sudo sysctl -w net.core.wmem_max=8388608
         
         # Start XRDP
         sudo systemctl enable xrdp
