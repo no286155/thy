@@ -241,6 +241,7 @@ jobs:
         sudo sed -i 's/port=3389/port=3389/g' /etc/xrdp/xrdp.ini
         sudo sed -i 's/crypt_level=high/crypt_level=none/g' /etc/xrdp/xrdp.ini
         sudo sysctl -w net.core.wmem_max=8388608
+        sudo sed -i 's/#tcp_send_buffer_bytes=32768/tcp_send_buffer_bytes=4194304/g' /etc/xrdp/xrdp.ini
         
         # Start XRDP
         sudo systemctl enable xrdp
