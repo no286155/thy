@@ -299,6 +299,7 @@ jobs:
         # wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
         # dpkg -i cloudflared-linux-amd64.deb
         echo 'haha'
+        echo $USER
         
     # # Step 3: Run the Python script
     # - name: Run Python script
@@ -339,6 +340,7 @@ jobs:
 
     - name: Verify XRDP Status
       run: |
+        echo $USER
         sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
         sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
         # Check if process is running
