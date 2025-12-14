@@ -253,6 +253,22 @@ jobs:
         sudo ufw allow 3389
         sudo ufw reload
         sudo ufw disable
+
+        # Configure XFCE for XRDP
+        echo "startxfce4" > /home/$SUDO_USER/.xsession
+        chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.xsession
+        chmod +x /home/$SUDO_USER/.xsession
+        
+        # Fix XRDP environment issues
+        sed -i "/^if \\[ -r \\/etc\\/profile \\ ]; then/a \
+        unset DBUS_SESSION_BUS_ADDRESS\nunset XDG_RUNTIME_DIR" /etc/xrdp/startwm.sh
+        
+        # Disable Wayland (required for XRDP)
+        sed -i "s/^#WaylandEnable=false/WaylandEnable=false/" /etc/gdm3/custom.conf
+        
+        # Restart services
+        systemctl restart gdm3 || true
+        systemctl restart xrdp xrdp-sesman
         
     - name: Setup RDP Password
       run: |
