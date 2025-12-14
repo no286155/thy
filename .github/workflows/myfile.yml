@@ -7,9 +7,6 @@ jobs:
     steps:    
     - name: Setup Cloudflared
       run: |
-        # wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-        # sudo dpkg -i cloudflared-linux-amd64.deb
-        # Add cloudflare gpg key
         sudo mkdir -p --mode=0755 /usr/share/keyrings
         curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
         
@@ -83,18 +80,8 @@ jobs:
       env:
         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
       run: |
-        # # 2 lines after this is working
         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
         sudo systemctl start cloudflared
-        # # Check tunnel status
-        # cloudflared tunnel list
-        # cloudflared tunnel info testing
-        # # Verify tunnel logs
-        # sudo cloudflared tunnel testing run --url tcp://localhost:3389
-        # sudo cloudflared tunnel hloc-dpdns run --url tcp://localhost:3389
-        # after this line isnt important
-        # wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-        # dpkg -i cloudflared-linux-amd64.deb
         echo 'haha'
         echo $USER
 
@@ -108,9 +95,7 @@ jobs:
         
         # Check actual port binding
         sudo netstat -tulpn | grep xrdp
-        
-        # # Check SELinux status (if applicable)
-        # sestatus
+        sudo netstat -tlnp | grep 3389
 
     - name: Enable Debug Logging
       run: |
