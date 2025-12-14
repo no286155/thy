@@ -425,6 +425,7 @@ jobs:
         sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
         # sudo tcpdump -i any port 3389 &     
         # sleep 6h
+        ls /usr/share/xsessions/
     - name: Keep Alive
       run: |
         # XRDP logs
