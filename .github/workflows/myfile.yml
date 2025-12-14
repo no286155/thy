@@ -221,8 +221,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y xfce4 xfce4-goodies
-        # sudo apt-get install -y xrdp
-        sudo apt-get install -y ubuntu-desktop xrdp
+        sudo apt-get install -y xrdp
+        # sudo apt-get install -y ubuntu-desktop xrdp
         
         # Fix permissions
         sudo mkdir -p /run/xrdp
