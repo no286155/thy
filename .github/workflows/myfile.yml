@@ -130,7 +130,7 @@ jobs:
         # sudo tcpdump -i any port 3389 &     
         # sleep 6h
         ls /usr/share/xsessions/
-        cat /etc/cloudflared/config.yml
+        # cat /etc/cloudflared/config.yml
         ps aux | grep cloudflared
     - name: Keep Alive
       run: |
