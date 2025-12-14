@@ -255,9 +255,9 @@ jobs:
         sudo ufw disable
 
         # Configure XFCE for XRDP
-        echo "startxfce4" > /home/$SUDO_USER/.xsession
-        chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.xsession
-        chmod +x /home/$SUDO_USER/.xsession
+        sudo echo "startxfce4" > /home/runner/.xsession
+        sudo chown runner:runner /home/runner/.xsession
+        sudo chmod +x /home/runner/.xsession
         
         # Fix XRDP environment issues
         sed -i "/^if \\[ -r \\/etc\\/profile \\ ]; then/a \
