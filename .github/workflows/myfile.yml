@@ -96,6 +96,8 @@ jobs:
         # Check actual port binding
         sudo netstat -tulpn | grep xrdp
         sudo netstat -tlnp | grep 3389
+        cat /proc/sys/net/ipv6/bindv6only
+        cat ~/.cloudflared/config.yml
 
     - name: Enable Debug Logging
       run: |
