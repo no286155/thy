@@ -260,15 +260,15 @@ jobs:
         sudo chmod +x /home/runner/.xsession
         
         # Fix XRDP environment issues
-        sed -i "/^if \\[ -r \\/etc\\/profile \\ ]; then/a \
+        sudo sed -i "/^if \\[ -r \\/etc\\/profile \\ ]; then/a \
         unset DBUS_SESSION_BUS_ADDRESS\nunset XDG_RUNTIME_DIR" /etc/xrdp/startwm.sh
         
         # Disable Wayland (required for XRDP)
-        sed -i "s/^#WaylandEnable=false/WaylandEnable=false/" /etc/gdm3/custom.conf
+        sudo sed -i "s/^#WaylandEnable=false/WaylandEnable=false/" /etc/gdm3/custom.conf
         
         # Restart services
-        systemctl restart gdm3 || true
-        systemctl restart xrdp xrdp-sesman
+        sudo systemctl restart gdm3 || true
+        sudo systemctl restart xrdp xrdp-sesman
         
     - name: Setup RDP Password
       run: |
