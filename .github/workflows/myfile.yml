@@ -410,9 +410,12 @@ jobs:
     - name: Enable Debug Logging
       run: |
         systemctl status xrdp-sesman
+        echo "startxfce4" > ~/.xsession
+        chmod +x ~/.xsession
         sudo sed -i 's/LogLevel=INFO/LogLevel=DEBUG/g' /etc/xrdp/xrdp.ini
         sudo sed -i 's/EnableSyslog=true/EnableSyslog=true/g' /etc/xrdp/xrdp.ini
-        sudo systemctl restart xrdp
+        # sudo systemctl restart xrdp
+        sudo systemctl restart xrdp xrdp-sesman
         # debug errors::::
         unset SESSION_MANAGER
         unset DBUS_SESSION_BUS_ADDRESS
