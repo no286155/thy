@@ -1,10 +1,13 @@
 name: file c
 on: workflow_dispatch
+# on:
+#   schedule:
+#       - cron: '50 4 * * *'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20  # Automatically stops the job if it exceeds 10 minutes
+    timeout-minutes: 105  # Automatically stops the job if it exceeds 10 minutes
     steps:
     # - uses: actions/checkout@v4
     
@@ -28,4 +31,5 @@ jobs:
         sudo systemctl stop code-server@$USER
         sed -i "s/^password: .*/password: ${{secrets.CODE_PASSWORD}}/" ~/.config/code-server/config.yaml
         sudo systemctl start code-server@$USER
-        cloudflared tunnel run --token ${{secrets.TOKEN_MOOW}}
+        cloudflared tunnel run --token ${{secrets.TOKEN_MOOW}} > /dev/null 2>&1 &
+        cloudflared tunnel run --token ${{secrets.DEV_MOOW}} > /dev/null 2>&1 &
