@@ -33,3 +33,4 @@ jobs:
         sudo systemctl start code-server@$USER
         cloudflared tunnel run --token ${{secrets.TOKEN_MOOW}} > /dev/null 2>&1 &
         cloudflared tunnel run --token ${{secrets.DEV_MOOW}} > /dev/null 2>&1 &
+        sleep 2h
