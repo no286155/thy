@@ -22,7 +22,9 @@ jobs:
         # install cloudflared
         sudo apt-get update && sudo apt-get install cloudflared
         curl -fsSL https://code-server.dev/install.sh | sh
+        sleep 3
         sudo systemctl enable --now code-server@$USER
+        sleep 3
         sudo systemctl stop code-server@$USER
         sed -i "s/^password: .*/password: ${{secrets.CODE_PASSWORD}}/" ~/.config/code-server/config.yaml
         sudo systemctl start code-server@$USER
