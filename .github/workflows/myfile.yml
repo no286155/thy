@@ -273,8 +273,7 @@ jobs:
         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
       run: |
         # # 2 lines after this is working
-        # sudo cloudflared service install ${CLOUDFLARE_TOKEN}
-        sudo cloudflared service tunnel --edge-ip-version 4 install ${CLOUDFLARE_TOKEN}
+        sudo cloudflared service install ${CLOUDFLARE_TOKEN}
         sudo systemctl start cloudflared
         # # Check tunnel status
         # cloudflared tunnel list
