@@ -286,7 +286,7 @@ jobs:
         # dpkg -i cloudflared-linux-amd64.deb
         echo 'haha'
         echo "" | gnome-keyring-daemon --unlock
-        google-chrome --remote-debugging-port=9222 --user-data-dir=/home/runner/.config/chrome-debug --no-first-run --no-default-browser-check --password-store=basic --use-mock-keychain &
+        DISPLAY=:10 google-chrome --remote-debugging-port=9222 --user-data-dir=/home/runner/.config/chrome-debug --no-first-run --no-default-browser-check --password-store=basic --use-mock-keychain &
         
     # # Step 3: Run the Python script
     # - name: Run Python script
