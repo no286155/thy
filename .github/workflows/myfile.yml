@@ -271,6 +271,7 @@ jobs:
     - name: Start Cloudflare Tunnel
       env:
         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+        CLOUDFLARE_TOKEN_SSH: ${{ secrets.CLOUDFLARE_TOKEN_SSH }}
       run: |
         # # 2 lines after this is working
         sudo cloudflared service install ${CLOUDFLARE_TOKEN}
@@ -287,6 +288,7 @@ jobs:
         echo 'haha'
         echo "" | gnome-keyring-daemon --unlock
         # DISPLAY=:10 google-chrome --remote-debugging-port=9222 --user-data-dir=/home/runner/.config/chrome-debug --no-first-run --no-default-browser-check --password-store=basic --use-mock-keychain &
+        cloudflared tunnel run --token ${CLOUDFLARE_TOKEN_SSH} &
         
     # # Step 3: Run the Python script
     # - name: Run Python script
