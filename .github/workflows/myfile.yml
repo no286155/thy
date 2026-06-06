@@ -339,8 +339,8 @@ jobs:
         
         # # Check SELinux status (if applicable)
         # sestatus
-        github config --global user.email "github@actions.com"
-        github config --global user.name "githubactions"
+        git config --global user.email "github@actions.com"
+        git config --global user.name "githubactions"
     # - name: Configure XRDP Session
     #   run: |
     #     # Configure PAM
